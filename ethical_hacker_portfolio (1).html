@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upendra Dhakad - Ethical Hacker & Security Researcher</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap');
+
+        :root {
+            --primary-green: #00ff41;
+            --secondary-green: #00cc33;
+            --dark-bg: #0a0a0a;
+            --darker-bg: #050505;
+            --terminal-bg: #111111;
+            --text-color: #e0e0e0;
+            --gray-text: #ff0080;
+            ;
+            --red-alert: #ff4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--dark-bg);
+            color: var(--text-color);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Matrix-style background animation */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background: linear-gradient(180deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+        }
+
+        .matrix-column {
+            position: absolute;
+            top: -100px;
+            font-size: 14px;
+            color: var(--primary-green);
+            opacity: 0.1;
+            animation: matrix-fall linear infinite;
+        }
+
+        @keyframes matrix-fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+        /* Terminal-style cursor */
+        .cursor {
+            display: inline-block;
+            background: var(--primary-green);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--primary-green);
+            padding: 1rem 2rem;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            text-shadow: 0 0 10px var(--primary-green);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ff0080;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-green);
+            text-shadow: 0 0 5px var(--primary-green);
+            text-transform: uppercase;
+        }
+
+        /* Main sections */
+        main {
+            margin-top: 80px;
+        }
+
+        section {
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* Hero section */
+        .hero {
+            text-align: center;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-green);
+            text-shadow: 0 0 20px var(--primary-green);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px var(--primary-green);
+            }
+
+            to {
+                text-shadow: 0 0 30px var(--primary-green), 0 0 40px var(--primary-green);
+            }
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+        }
+
+        .terminal-window {
+            background: var(--terminal-bg);
+            border: 2px solid var(--primary-green);
+            border-radius: 0;
+            margin: 2rem auto;
+            max-width: 800px;
+            box-shadow:
+                0 0 20px rgba(0, 255, 65, 0.3),
+                inset 0 0 20px rgba(0, 255, 65, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .terminal-window::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg,
+                    transparent 0%,
+                    var(--primary-green) 20%,
+                    var(--primary-green) 80%,
+                    transparent 100%);
+            animation: scan-line 3s linear infinite;
+        }
+
+        @keyframes scan-line {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .terminal-header {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 1rem;
+            border-bottom: 1px solid var(--primary-green);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+        }
+
+        .terminal-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 255, 65, 0.03) 2px,
+                    rgba(0, 255, 65, 0.03) 4px);
+            pointer-events: none;
+        }
+
+        .terminal-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--primary-green);
+            font-size: 0.8rem;
+        }
+
+        .system-info {
+            color: var(--gray-text);
+            font-size: 0.8rem;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-green);
+            font-size: 0.8rem;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--primary-green);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .terminal-content {
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .prompt {
+            color: var(--primary-green);
+        }
+
+        .command {
+            color: var(--secondary-green);
+        }
+        .output a{
+            text-decoration: none;
+            color: var(--text-color);
+        }
+        .output {
+            
+            color: var(--text-color);
+            margin-left: 2rem;
+        }
+
+
+        /* Skills grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .skill-card {
+            background: var(--terminal-bg);
+            border: 1px solid var(--primary-green);
+            border-radius: 10px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-green), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .skill-card:hover::before {
+            left: 100%;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.2);
+        }
+
+        .skill-card h3 {
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .skill-list {
+            list-style: none;
+        }
+
+        .skill-list li {
+            margin: 0.5rem 0;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .skill-list li::before {
+            content: '>';
+            color: var(--primary-green);
+            position: absolute;
+            left: 0;
+        }
+
+        /* Projects section */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .project-card {
+            background: var(--terminal-bg);
+            border: 1px solid var(--primary-green);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 255, 65, 0.2);
+        }
+
+        .project-header {
+            background: var(--darker-bg);
+            padding: 1rem;
+            border-bottom: 1px solid var(--primary-green);
+        }
+
+        .project-header h3 {
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-type {
+            color: var(--gray-text);
+            font-size: 0.8rem;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-description {
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        /*certification image*/
+        .certification_image{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+         
+        
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tech-tag {
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--primary-green);
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--primary-green);
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            background: transparent;
+            border: 1px solid var(--primary-green);
+            color: var(--primary-green);
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--primary-green);
+            color: var(--dark-bg);
+            box-shadow: 0 0 15px var(--primary-green);
+        }
+
+        /* Contact section */
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .contact-card {
+            background: var(--terminal-bg);
+            border: 1px solid var(--primary-green);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 65, 0.2);
+        }
+
+        .contact-icon {
+            font-size: 2rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--primary-green);
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 2px;
+            background: var(--primary-green);
+            margin: 1rem auto;
+            box-shadow: 0 0 10px var(--primary-green);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            section {
+                padding: 2rem 1rem;
+            }
+
+            .projects-grid,
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-green);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-green);
+        }
+
+        /* Footer */
+        #footer-bar{
+            font-size: 1rem;
+            color: #ff0080;
+             text-decoration: #ff0080;
+             text-shadow: #ff0080 0 0 10px;
+             text-decoration: #ff0080 1px 0 10px solid;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class="matrix-bg" id="matrix"></div>
+
+    <header>
+        <nav>
+            <div class="logo">upendra@dhakad:~$</div>
+            <ul class="nav-links">
+                <li><a href="#home">./home</a></li>
+                <li><a href="#skills">./skills</a></li>
+                <li><a href="#projects">./projects</a></li>
+                <li><a href="#certificates">./certs</a></li>
+                <li><a href="#contact">./contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="container">
+                <h1>Upendra Dhakad<span class="cursor" class="section-title">_</span></h1>
+                <p class="subtitle">Ethical Hacker & Security Researcher</p>
+
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-controls">
+                            <span>◉ SECURE SHELL</span>
+                        </div>
+                        <div class="system-info">
+                            upendra@dhakad-lab | IPv4: 192.168.1.100
+                        </div>
+                        <div class="connection-status">
+                            <div class="status-indicator"></div>
+                            <span>CONNECTED</span>
+                        </div>
+                    </div>
+                    <div class="terminal-content">
+                        <div><span class="prompt">upendra@dhakad:~$</span> <span class="command">whoami</span></div>
+                        <div class="output">Ethical Hacker | Penetration Tester | Security</div>
+                        <div class="output">Specializing in web application security and network penetration testing
+                        </div>
+                        <br>
+                        <div><span class="prompt">upendra@dhakad:~$</span> <span class="command">cat mission.txt</span>
+                        </div>
+                        <div class="output">Helping organizations identify vulnerabilities before malicious actors do.
+                        </div>
+                        <div class="output">Committed to making the digital world safer through ethical hacking.</div>
+
+                        <div><span class="prompt">upendra@dhakad:~$</span> <span class="cursor">_</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills">
+            <div class="container">
+                <h2 class="section-title">./skills</h2>
+                <div class="skills-grid">
+                    <div class="skill-card">
+                        <h3>Penetration Testing</h3>
+                        <ul class="skill-list">
+                            <li>Web Application Testing</li>
+                            <li>Network Penetration Testing</li>
+                            <li>Wireless Security Assessment</li>
+                            <li>Social Engineering Testing</li>
+                        </ul>
+                    </div>
+
+                    <div class="skill-card">
+                        <h3>Security Tools</h3>
+                        <ul class="skill-list">
+                            <li>Nmap, Burp Suite, Metasploit</li>
+                            <li>Wireshark, Nessus, OpenVAS</li>
+                            <li>John the Ripper, Hashcat</li>
+                            <li>Aircrack-ng, Kismet</li>
+                            <li>OWASP ZAP, SQLmap</li>
+                        </ul>
+                    </div>
+
+                    <div class="skill-card">
+                        <h3>Programming & Scripting</h3>
+                        <ul class="skill-list">
+                            <li>Python (Automation & Exploits)</li>
+                            <li>Bash/PowerShell Scripting</li>
+                            <li>JavaScript (XSS & Client-side)</li>
+                            <li>SQL (Injection Testing)</li>
+
+                        </ul>
+                    </div>
+
+                    <div class="skill-card">
+                        <h3>Operating Systems</h3>
+                        <ul class="skill-list">
+                            <li>Kali Linux / Parrot OS</li>
+                            <li>Windows Server Administration</li>
+                            <li>Ubuntu </li>
+                            <li>VMware / VirtualBox</li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects">
+            <div class="container">
+                <h2 class="section-title">./projects</h2>
+                <div class="projects-grid">
+                    <div class="project-card">
+                        <div class="project-header">
+                            <h3>VulnScanner Pro</h3>
+                            <span class="project-type">Security Tool Development</span>
+                        </div>
+                        <div class="project-content">
+                            <p class="project-description">
+                                Automated vulnerability scanner with custom exploit modules. Identified over 200
+                                critical vulnerabilities across client environments.
+                            </p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">Flask</span>
+                                <span class="tech-tag">SQLite</span>
+                                <span class="tech-tag">Nmap</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="#" class="btn">View Code</a>
+                                <a href="#" class="btn">Demo</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-header">
+                            <h3>RedTeam Framework</h3>
+                            <span class="project-type">Penetration Testing</span>
+                        </div>
+                        <div class="project-content">
+                            <p class="project-description">
+                                Comprehensive red team engagement toolkit for advanced persistent threat simulation and
+                                defense evasion techniques.
+                            </p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">C#</span>
+                                <span class="tech-tag">PowerShell</span>
+                                <span class="tech-tag">Metasploit</span>
+                                <span class="tech-tag">Cobalt Strike</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="#" class="btn">Case Study</a>
+                                <a href="#" class="btn">Report</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-header">
+                            <h3>WebApp Security Lab</h3>
+                            <span class="project-type">Training Platform</span>
+                        </div>
+                        <div class="project-content">
+                            <p class="project-description">
+                                Interactive web application security training platform with 50+ vulnerable scenarios for
+                                hands-on learning.
+                            </p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">Docker</span>
+                                <span class="tech-tag">PHP</span>
+                                <span class="tech-tag">MySQL</span>
+                                <span class="tech-tag">JavaScript</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="#" class="btn">Try Lab</a>
+                                <a href="#" class="btn">GitHub</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-header">
+                            <h3>Bug Bounty Research</h3>
+                            <span class="project-type">Vulnerability Research</span>
+                        </div>
+                        <div class="project-content">
+                            <p class="project-description">
+                                Discovered and responsibly disclosed 15+ critical vulnerabilities. Hall of Fame mentions
+                                from major tech companies.
+                            </p>
+                            <div class="tech-stack">
+                                <span class="tech-tag">OWASP Top 10</span>
+                                <span class="tech-tag">Burp Suite</span>
+                                <span class="tech-tag">Custom Tools</span>
+                                <span class="tech-tag">Manual Testing</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="#" class="btn">Hall of Fame</a>
+                                <a href="#" class="btn">CVE List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="certificates">
+            <div class="container">
+                <h2 class="section-title">./certifications</h2>
+                <div class="projects-grid">
+                    <div class="project-card">
+                        <div class="project-header">
+                            <h3>Ethical Hacker 1</h3>
+                            <div class="certification_image"><img src="cert\UpendraDhakad-NDG Linux Unhatc-certificate (1)_page-0001.jpg" alt="NDG Linux Unhatc" width=500px height=300px></div>
+                            <span class="project-type">Issued By: CISCO</span>
+                        </div>
+
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-header">
+                            <h3>Ethical Hacker 2</h3>
+                            <div class="certification_image"><img src="cert\UpendraDhakad-NDG Linux Unhatc-certificate (1)_page-0001.jpg" alt="NDG Linux Unhatc" width=500px height=300px></div>
+                            <span class="project-type">Issued By: IIT Delhi</span>
+                        </div>
+
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-header">
+                            <h3>Python</h3>
+                            <div class="certification_image"><img src="cert\UpendraDhakad-NDG Linux Unhatc-certificate (1)_page-0001.jpg" alt="NDG Linux Unhatc" width=500px height=300px></div>
+                            <span class="project-type">Issued By: CISCO</span>
+                        </div>
+
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-header">
+                            <h3>Networking</h3>
+                            <div class="certification_image"><img src="cert\UpendraDhakad-NDG Linux Unhatc-certificate (1)_page-0001.jpg" alt="NDG Linux Unhatc" width=500px height=300px></div>
+                            <span class="project-type">Issued By: CISCO</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="container">
+                <h2 class="section-title">./contact</h2>
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-controls">
+                            <span>◉ CONTACT PROTOCOL</span>
+                        </div>
+                        <div class="system-info">
+                            secure-comms@encrypted-channel
+                        </div>
+                        <div class="connection-status">
+                            <div class="status-indicator"></div>
+                            <span>ENCRYPTED</span>
+                        </div>
+                    </div>
+                    <div class="terminal-content">
+                        <div><span class="prompt">upendra@dhakad:~$</span> <span class="command">cat
+                                contact_info.txt</span></div>
+                        <br>
+                        <div class="output"> <a href="mailto:updhakad123@gmail.com" target="_blank">📧 Email: updhakad123@gmail.com </a></div>
+                        <div class="output" > <a href="https://in.linkedin.com/in/upendra-dhakad-3b9b3b262" target="_blank">🔗 LinkedIn: /in/upendra-dhakad</a></div>
+                        <div class="output"> <a href="https://github.com/dhakad-upendra" target="_blank">🐙 GitHub: /dhakad-upendra</a></div>
+                        <br>
+                        <div class="output">💼 Open for: Penetration Testing | Security Consulting | Bug Bounty
+                            Collaboration</div>
+                        <div class="output">🌍 Location: Remote | India</div>
+                        <br>
+                        <div><span class="prompt">upendra@dhakad:~$</span> <span class="command">echo "Let's make the
+                                internet safer together!"</span></div>
+                        <div class="output">Let's make the internet safer together!</div>
+                        <br>
+                        <div><span class="prompt">upendra@dhakad:~$</span> <span class="cursor">_</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Matrix-style background animation
+        function createMatrixEffect() {
+            const matrix = document.getElementById('matrix');
+            const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+            function createColumn() {
+                const column = document.createElement('div');
+                column.className = 'matrix-column';
+                column.style.left = Math.random() * 100 + 'vw';
+                column.style.animationDuration = (Math.random() * 3 + 2) + 's';
+
+                let text = '';
+                for (let i = 0; i < 20; i++) {
+                    text += chars[Math.floor(Math.random() * chars.length)] + '<br>';
+                }
+                column.innerHTML = text;
+
+                matrix.appendChild(column);
+
+                setTimeout(() => {
+                    if (column.parentNode) {
+                        column.parentNode.removeChild(column);
+                    }
+                }, 5000);
+            }
+
+            setInterval(createColumn, 100);
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Terminal typing animation
+        function typeWriter() {
+            const commands = [
+                'nmap -sS -O target.com',
+                'sqlmap -u "http://target.com/page?id=1" --dbs',
+                'gobuster dir -u http://target.com -w /usr/share/wordlists/dirb/common.txt',
+                'nikto -h http://target.com',
+                'hydra -l admin -P passwords.txt target.com ssh'
+            ];
+
+            let currentCommand = 0;
+            let currentChar = 0;
+            const speed = 100;
+
+            function type() {
+                if (currentChar < commands[currentCommand].length) {
+                    // This would be for additional terminal animations
+                    currentChar++;
+                    setTimeout(type, speed);
+                } else {
+                    currentCommand = (currentCommand + 1) % commands.length;
+                    currentChar = 0;
+                    setTimeout(type, 2000); // Pause between commands
+                }
+            }
+
+            // Uncomment to enable typing animation
+            // type();
+        }
+
+        // Add glitch effect to hero text occasionally
+        function addGlitchEffect() {
+            const heroTitle = document.querySelector('.hero h1');
+            const originalText = heroTitle.textContent;
+
+            setInterval(() => {
+                if (Math.random() < 0.1) { // 10% chance every interval
+                    heroTitle.style.textShadow = '2px 0 #ff0000, -2px 0 #00ffff';
+                    heroTitle.style.transform = 'skew(0.5deg)';
+
+                    setTimeout(() => {
+                        heroTitle.style.textShadow = '0 0 20px var(--primary-green)';
+                        heroTitle.style.transform = 'none';
+                    }, 200);
+                }
+            }, 3000);
+        }
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function () {
+            createMatrixEffect();
+            typeWriter();
+            addGlitchEffect();
+        });
+
+        // Add interactive hover effects for skill cards
+        document.querySelectorAll('.skill-card').forEach(card => {
+            card.addEventListener('mouseenter', function () {
+                this.style.borderColor = '#00ff41';
+                this.style.boxShadow = '0 0 20px rgba(0, 255, 65, 0.3)';
+            });
+
+            card.addEventListener('mouseleave', function () {
+                this.style.borderColor = '#00ff41';
+                this.style.boxShadow = 'none';
+            });
+        });
+
+
+    </script>
+</body>
+<footer><div id="footer-bar" class="section-title">Made with ♥ by Upendra Dhakad </div> </footer>
+
+</html>
